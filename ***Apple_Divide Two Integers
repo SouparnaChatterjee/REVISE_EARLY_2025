@@ -1,0 +1,47 @@
+//subtraction and bit manipulation as standard multiplication or division operators cant be used... fractional part is rejected... 
+//keep subtracting divisor from the dividend until dividend is smaller than divisor
+//instead of subtracting the divisor continuously, we exponentially by left shifting the divisor and subtract from the dividend if possible
+//The time complexity here is O(log(a) * log(b)), with 'a' being the dividend and 'b' the divisor. 
+//1.Handle signs (if different signs, -)
+//2.Set INT_MAX as (1 << 31) - 1, which represents the maximum positive value for a 32-bit integer,set INT_MIN as -(1 << 31), representing the minimum negative value for a 32-bit integer,Initialize the quotient tot to 0.
+//3.
+  //a.Initialize a counter cnt with 0.
+  //b.inside loop, left shift divisor by cnt+1 positions.. divisor*2 until divisor>dividend
+  //c.After finding the maximum amount by which we can multiply the divisor without exceeding the dividend, we add 1 << cnt to our running total tot. This is equivalent to adding 2^cnt.
+  //d.Reduce the dividend by divisor << cnt.
+//4.Multiply the tot by the sign to apply the correct sign to the result. Overflow check
+class Solution {
+public:
+    int divide(int dividend, int divisor) {
+        // Determine the sign of the result
+        int resSign = (divisor < 0) ^ (dividend < 0) ? -1 : 1;
+
+        // Take absolute values to handle the division
+        long long absDividend = llabs(dividend);
+        long long absDivisor = llabs(divisor);
+        long long result = 0;
+
+        // Perform the division using bit manipulation
+        while (absDividend >= absDivisor) {
+            int shiftCount = 0;
+
+            // Find the largest shift where the shifted divisor is <= absDividend
+            while ((absDivisor << shiftCount) <= absDividend) {
+                shiftCount++;
+            }
+
+            // Subtract the shifted divisor and add the corresponding power of 2 to the result
+            result += 1LL << (shiftCount - 1);
+            absDividend -= absDivisor << (shiftCount - 1);
+        }
+
+        // Apply the sign to the result
+        result *= resSign;
+
+        // Handle overflow
+        if (result < INT32_MIN) return INT32_MIN;
+        if (result > INT32_MAX) return INT32_MAX;
+
+        return static_cast<int>(result);
+    }
+};
