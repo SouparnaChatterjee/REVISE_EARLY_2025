@@ -1,0 +1,42 @@
+class Solution {
+public:
+    // Returns the kth smallest element in a sorted matrix.
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+        int n = matrix.size(); // Size of the matrix (since matrix is n x n)
+        int left = matrix[0][0]; // Initialize 'left' to the smallest element
+        int right = matrix[n - 1][n - 1]; // Initialize 'right' to the largest element
+      
+        // Binary search in the range of values of the matrix
+        while (left < right) {
+            int mid = left + (right - left) / 2; // Avoid potential overflow
+            // If there are at least k elements less than or equal to mid, go to the left half
+            if (check(matrix, mid, k, n)) {
+                right = mid; // Move right towards the mid
+            } else { // Otherwise, go to the right half
+                left = mid + 1; // Move left towards the mid+1
+            }
+        }
+        // 'left' now points to the kth smallest element
+        return left;
+    }
+
+private:
+    // Helper function to check if there are at least k elements less than or equal to 'mid'
+    bool check(vector<vector<int>>& matrix, int mid, int k, int n) {
+        int count = 0; // Count of elements less than or equal to 'mid'
+        int i = n - 1; // Start from the bottom-left corner of the matrix
+        int j = 0; // Start from the first column
+      
+        while (i >= 0 && j < n) {
+            // If the current element is less than or equal to mid, move to the next column
+            if (matrix[i][j] <= mid) {
+                count += (i + 1); // Add all the elements of current column (since columns are sorted)
+                ++j; // Move to the next column
+            } else { // If the current element is greater than mid, move up
+                --i; // Move to the previous row
+            }
+        }
+        // Return true if count is greater than or equal to k
+        return count >= k;
+    }
+};
