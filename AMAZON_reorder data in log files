@@ -1,0 +1,33 @@
+class Solution {
+public:
+    vector<string> reorderLogFiles(vector<string>& logs) {
+    vector<string> letterlogs;
+    vector<string> digitlogs;//this too is a vector of strings
+    //for(char& iter:logs) 
+    for(string& iter:logs)    
+    {
+        int spacePos=iter.find(' ');
+        //int nextEle=spacePos+1;//ref to index .. so int
+        int nextEle=iter[spacePos+1];
+        if(isdigit(nextEle))
+        //digitlogs.push_back(nextEle);
+        digitlogs.push_back(iter);
+        else
+        letterlogs.push_back(iter);
+    }
+    sort(letterlogs.begin(), letterlogs.end(),[](string& a, string& b){
+    int spacePosA=a.find(' ');
+    int spacePosB=b.find(' ');
+    string idA=a.substr(0,spacePosA);
+    string idB=b.substr(0,spacePosB);
+    string contentA=a.substr(spacePosA+1);
+    string contentB=b.substr(spacePosB+1);
+    if(contentA==contentB) return idA<idB;
+     else
+     return contentA<contentB;
+
+    });
+    letterlogs.insert(letterlogs.end(), digitlogs.begin(), digitlogs.end());
+    return letterlogs;
+    }
+};
