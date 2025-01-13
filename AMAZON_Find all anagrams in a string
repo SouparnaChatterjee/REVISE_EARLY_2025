@@ -1,0 +1,30 @@
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        vector<int> result;
+        if (s.size() < p.size()) return result; // Base case
+
+        vector<int> sFreq(26, 0);
+        vector<int> pFreq(26, 0);
+
+        // Initialize frequency map for p
+        for (char c : p) pFreq[c - 'a']++;
+
+        for (int i = 0; i < s.size(); i++) {
+            // Add current character to the sliding window
+            sFreq[s[i] - 'a']++;
+
+            // Remove character that goes out of the window
+            if (i >= p.size()) {
+                sFreq[s[i - p.size()] - 'a']--;
+            }
+
+            // Check if the current window is an anagram of p
+            if (sFreq == pFreq) {
+                result.push_back(i - p.size() + 1);
+            }
+        }
+
+        return result;
+    }
+};
