@@ -1,0 +1,17 @@
+class MyCalendar {
+public:
+vector<pair<int,int>> bookings;//most imp line
+    MyCalendar() {
+        
+    }
+    
+    bool book(int startTime, int endTime) {
+    for(auto& it:bookings)
+    {
+        if(startTime<it.second && endTime>it.first)
+        return false;
+    }
+    bookings.push_back({startTime,endTime});
+    return true;
+    }
+};
