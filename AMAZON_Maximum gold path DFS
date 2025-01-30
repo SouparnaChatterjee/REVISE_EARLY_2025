@@ -1,0 +1,37 @@
+class Solution {
+public:
+    int dfs(vector<vector<int>>& grid, int i, int j) {
+        // Base case: Out of bounds or no gold
+        if (i < 0 || j < 0 || i >= grid.size() || j >= grid[0].size() || grid[i][j] == 0) {
+            return 0;
+        }
+        
+        int gold = grid[i][j];  // Collect current cell's gold
+        grid[i][j] = 0;  // Mark as visited
+        
+        // Move in all four directions
+        int maxGold = 0;
+        maxGold = max(maxGold, dfs(grid, i + 1, j));
+        maxGold = max(maxGold, dfs(grid, i - 1, j));
+        maxGold = max(maxGold, dfs(grid, i, j + 1));
+        maxGold = max(maxGold, dfs(grid, i, j - 1));
+        
+        grid[i][j] = gold;  // Restore grid state (backtrack)
+        return gold + maxGold;
+    }
+    
+    int getMaximumGold(vector<vector<int>>& grid) {
+        int maxGold = 0;
+        int rows = grid.size(), cols = grid[0].size();
+        
+        // Try starting DFS from every cell containing gold
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (grid[i][j] > 0) {
+                    maxGold = max(maxGold, dfs(grid, i, j));
+                }
+            }
+        }
+        return maxGold;
+    }
+};
